@@ -95,5 +95,6 @@ if __name__ == "__main__":
     )
 
     get_pfsense_config()
+    get_pihole_config()
 
-    logger.debug("Configs successfully retrieved.")
+    logger.info("Reached the end of Python, configs should be saved :)")
