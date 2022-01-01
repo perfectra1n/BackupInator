@@ -8,6 +8,7 @@ import pysftp
 # Local import
 import log
 
+
 def get_pfsense_config():
     logger.info("Fetching pfSense config now...")
 
@@ -15,33 +16,42 @@ def get_pfsense_config():
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys = None
 
-    if args.pfsense == 'false':
+    if args.pfsense == "false":
         logger.error("pfSense IP not provided")
         logger.info("Please provide the IP address / hostname of your pfSense")
         hostname = input("Hostname / IP address of pfSense: ")
     else:
         hostname = args.pfsense
 
-    if args.username == 'false':
+    if args.username == "false":
         logger.error("Username not provided")
         logger.info("Please provide the username to connect to pfSense as")
         username = input("Username to SSH (SFTP) into pfSense as: ")
     else:
         username = args.username
 
-    with pysftp.Connection(hostname, username=username, private_key=args.pfsense_ssh_private_key, cnopts=cnopts) as sftp:
+    with pysftp.Connection(
+        hostname,
+        username=username,
+        private_key=args.pfsense_ssh_private_key,
+        cnopts=cnopts,
+    ) as sftp:
         try:
             sftp.get("/conf/config.xml", args.pfsense_output)
             logger.info("Fetched SOMETHING, hopefully it's the pfSense config :)")
             logger.info(f"Saved pfSense config to '{args.pfsense_output}'")
         except AuthenticationException as e:
             logger.error(e)
-            logger.info("It appears that the credentials that you provded aren't correct, please try again.")
-            
+            logger.info(
+                "It appears that the credentials that you provded aren't correct, please try again."
+            )
+
     return
+
 
 def get_pihole_config():
     return
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -79,8 +89,10 @@ if __name__ == "__main__":
 
     logger = log.get_logger(__file__, debug=args.debug)
 
-    print(pyfiglet.figlet_format("pfSense and PiHole Backup", font = "slant"))
-    logger.warning("Please be sure to enable SSH in your pfSense (System -> Advanced -> Admin Access")
+    print(pyfiglet.figlet_format("pfSense and PiHole Backup", font="slant"))
+    logger.warning(
+        "Please be sure to enable SSH in your pfSense (System -> Advanced -> Admin Access"
+    )
 
     get_pfsense_config()
 
