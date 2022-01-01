@@ -30,8 +30,9 @@ def get_pfsense_config():
     with pysftp.Connection(hostname, username=username, private_key=args.pfsense_ssh_private_key, cnopts=cnopts) as sftp:
         try:
             sftp.get('/conf/config.xml', "pfsense_config.xml")
-        except AuthenticationException:
-            print("Exception")
+        except AuthenticationException as e:
+            logger.error(e)
+            logger.info("It appears that the credentials that you provded aren't correct, please try again.")
             
     return
 
