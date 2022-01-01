@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import argparse
+
+from paramiko.ssh_exception import AuthenticationException
 import pyfiglet
 import pysftp
 
@@ -16,17 +18,21 @@ def get_pfsense_config():
         logger.info("Please provide the IP address / hostname of your pfSense")
         hostname = input("Hostname / IP address of pfSense: ")
     else:
-        hostname = args.pfsense
+        hostname = args.pfsense[0]
 
     if args.username == 'false':
         logger.error("Username not provided")
         logger.info("Please provide the username to connect to pfSense as")
         username = input("Username to SSH (SFTP) into pfSense as: ")
     else:
-        username = args.username
+        username = args.username[0]
 
     with pysftp.Connection(hostname, username=username, private_key=args.pfsense_ssh_private_key, cnopts=cnopts) as sftp:
-        sftp.get('/conf/config.xml', "pfsense_config.xml")
+        try:
+            sftp.get('/conf/config.xml', "pfsense_config.xml")
+        except AuthenticationException:
+            print("Exception")
+            
     return
 
 
