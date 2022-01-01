@@ -9,6 +9,8 @@ import pysftp
 import log
 
 def get_pfsense_config():
+    logger.info("Fetching pfSense config now...")
+    
     # Have it ignore the hostkey checks
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys = None
@@ -30,13 +32,15 @@ def get_pfsense_config():
     with pysftp.Connection(hostname, username=username, private_key=args.pfsense_ssh_private_key, cnopts=cnopts) as sftp:
         try:
             sftp.get('/conf/config.xml', "pfsense_config.xml")
+            logger.info("Fetched SOMETHING, hopefully it's the pfSense config :)")
         except AuthenticationException as e:
             logger.error(e)
             logger.info("It appears that the credentials that you provded aren't correct, please try again.")
             
     return
 
-
+def get_pihole_config():
+    return
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
