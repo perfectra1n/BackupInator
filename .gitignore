@@ -152,3 +152,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Default Configs
+pfsense_config.xml
+pihole-teleporter.tar.gz
