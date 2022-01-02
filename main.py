@@ -128,7 +128,7 @@ def get_pihole_config():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="This is the description for the main parser!"
+        description="Back up Pfsense/Pihole config remotely."
     )
     target_group = parser.add_mutually_exclusive_group(required=True)
     target_group.add_argument(
