@@ -16,19 +16,17 @@ python main.py ~/.ssh/sshkey.pem --pihole 192.168.1.2 --user perf3ct --pihole-pa
 ```
 
 ## Help Output:
-```bash
-[root@DESKTOP-ORG3A01] ~/repos/pfsense-pihole-backup
- > python main.py -h                                                                                                 
-usage: main.py [-h] (--pfsense PFSENSE | --pihole PIHOLE) [--user USER] [--pfsense-output PFSENSE_OUTPUT] [--pihole-output PIHOLE_OUTPUT] [--pihole-password PIHOLE_PASSWORD] [--debug] private_key
+```
+usage: main.py [-h] (--pfsense PFSENSE | --pihole PIHOLE) [--user USER] [--pfsense-output PFSENSE_OUTPUT | --pihole-output PIHOLE_OUTPUT] [--pihole-password PIHOLE_PASSWORD] [--debug] private_key
 
 This is the description for the main parser!
 
 positional arguments:
-  private_key           Required. Please provide the path to your private key to be used to SSH into pfSense.
+  private_key           Required. Please provide the path to your private key to be used to SSH into PfSense/Pihole.
 
 optional arguments:
   -h, --help            show this help message and exit
-  --pfsense PFSENSE     Provide the IP address / hostname of PfSense that you wish to fetch the config of.
+  --pfsense PFSENSE     Provide the IP address / hostname of the PfSense/Pihole system that you wish to fetch the config of.
   --pihole PIHOLE       Provide the IP address / hostname of Pihole that you wish to fetch the config of.
   --user USER           Required. Provide the username to connect as.
   --pfsense-output PFSENSE_OUTPUT
@@ -36,6 +34,6 @@ optional arguments:
   --pihole-output PIHOLE_OUTPUT
                         Optional. Provide the output name of the PiHole config file.
   --pihole-password PIHOLE_PASSWORD
-                        Optional. Provide the password for your PiHole installation so that the config package can be generated.
-  --debug               Optional. Use this argument if you are debugging any errors.
+                        Required. Provide the password for your PiHole user sudo password so that the config package can be generated.
+  --debug               Optional. Use this argument if you are debugging any errors.            Optional. Use this argument if you are debugging any errors.
 ```
