@@ -185,7 +185,7 @@ if __name__ == "__main__":
 
     print(pyfiglet.figlet_format("pfSense and PiHole Backup", font="slant"))
     logger.warning(
-        "Please be sure to enable SSH in your pfSense (System -> Advanced -> Admin Access"
+        "Please be sure to enable SSH in your pfSense (System -> Advanced -> Admin Access)"
     )
     if args.pfsense != "false":
         get_pfsense_config()
