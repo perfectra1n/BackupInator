@@ -19,7 +19,7 @@ python main.py ~/.ssh/sshkey.pem --pihole 192.168.1.2 --user perf3ct --pihole-pa
 ```
 usage: main.py [-h] (--pfsense PFSENSE | --pihole PIHOLE) [--user USER] [--pfsense-output PFSENSE_OUTPUT | --pihole-output PIHOLE_OUTPUT] [--pihole-password PIHOLE_PASSWORD] [--debug] private_key
 
-This is the description for the main parser!
+Back up Pfsense/Pihole config remotely.
 
 positional arguments:
   private_key           Required. Please provide the path to your private key to be used to SSH into PfSense/Pihole.
