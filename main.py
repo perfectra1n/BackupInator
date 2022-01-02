@@ -15,7 +15,7 @@ import log
 
 
 def get_pfsense_config():
-    logger.info("Fetching pfSense config now...")
+    logger.info("Fetching pfSense config...")
 
     # Have it ignore the hostkey checks
     cnopts = pysftp.CnOpts()
@@ -45,7 +45,7 @@ def get_pfsense_config():
         try:
             logger.info("Attempting to fetch pfSense config now...")
             sftp.get("/conf/config.xml", args.pfsense_output)
-            logger.info("Fetched SOMETHING, hopefully it's the pfSense config :)")
+            logger.debug("Fetched SOMETHING, hopefully it's the pfSense config :)")
             logger.info(f"Saved pfSense config to '{args.pfsense_output}'")
         except AuthenticationException as e:
             logger.error(e)
@@ -56,7 +56,7 @@ def get_pfsense_config():
 
 
 def get_pihole_config():
-    logger.info("Fetching Pihole configs now...")
+    logger.info("Fetching Pihole configs...")
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys = None
 
@@ -117,7 +117,7 @@ def get_pihole_config():
         try:
             logger.info("Attempting to fetch Pihole config backup now...")
             sftp.get(f"/tmp/piholeconfigs/{filename}", args.pihole_output)
-            logger.info("Fetched SOMETHING, hopefully it's the Pihole config :)")
+            logger.debug("Fetched SOMETHING, hopefully it's the Pihole config :)")
             logger.info(f"Saved Pihole config to '{args.pihole_output}'")
         except AuthenticationException as e:
             logger.error(e)
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         "--pfsense",
         type=str,
         default="false",
-        help="Provide the IP address / hostname of  PfSense that you wish to fetch the config of.",
+        help="Provide the IP address / hostname of the PfSense/Pihole system that you wish to fetch the config of.",
     )
     target_group.add_argument(
         "--pihole",
@@ -152,16 +152,17 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "private_key",
-        help="Required. Please provide the path to your private key to be used to SSH into pfSense.",
+        help="Required. Please provide the path to your private key to be used to SSH into PfSense/Pihole.",
     )
+    output_group = parser.add_mutually_exclusive_group(required=False)
 
-    parser.add_argument(
+    output_group.add_argument(
         "--pfsense-output",
         type=str,
         default="pfsense_config.xml",
         help="Optional. Provide the output name of the pfsense config file.",
     )
-    parser.add_argument(
+    output_group.add_argument(
         "--pihole-output",
         type=str,
         default="pihole-teleporter.tar.gz",
@@ -171,7 +172,7 @@ if __name__ == "__main__":
         "--pihole-password",
         type=str,
         default="false",
-        help="Optional. Provide the password for your PiHole installation so that the config package can be generated.",
+        help="Required. Provide the password for your PiHole user sudo password so that the config package can be generated.",
     )
     parser.add_argument(
         "--debug",
@@ -192,4 +193,4 @@ if __name__ == "__main__":
     elif args.pihole != "false":
         get_pihole_config()
 
-    logger.info("Reached the end of Python, configs should be saved :)")
+    logger.debug("Reached the end of Python, configs should be saved :)")
