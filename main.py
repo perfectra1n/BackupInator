@@ -119,6 +119,10 @@ def get_pihole_config():
     while True:
         ssh_clientsdtin, ssh_client_stdout, ssh_client_stderr = ssh_client2.exec_command(f"du -sh /tmp/piholeconfigs/{filename} | cut -d 'K' -f 1", get_pty=True)
         file_size = ssh_client_stdout.readlines()[0]
+        error = ssh_client_stderr.readlines()
+        if len(error) > 0:
+            logger.error(f"Error while getting file size: {error}")
+            exit(1)
         logger.debug(f"Got file size of {file_size}")
         if file_size != "0":
             ssh_client2.close()
