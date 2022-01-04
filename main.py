@@ -82,7 +82,15 @@ def get_pihole_config():
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 
     # Because paramiko requires loading the private key...
-    loaded_pkey = paramiko.RSAKey.from_private_key_file(args.private_key)
+    while True:
+        try:
+            loaded_pkey = paramiko.RSAKey.from_private_key_file(args.private_key)
+            break
+        except FileNotFoundError as e:
+            logger.error(e)
+            logger.info("SSH file not found. Try again?")
+            args.private_key = input("Enter the path to your private ssh key: ")
+
 
     ssh_client.connect(args.pihole, username=args.user, pkey=loaded_pkey)
     ssh_client_stdin, ssh_client_stdout, ssh_client_stderr = ssh_client.exec_command(
@@ -104,12 +112,21 @@ def get_pihole_config():
     )
     # Have to do it in this weird order because of Paramiko
     file_list_output = ssh_client_stdout.readlines()
-    ssh_client2.close()
-
     # Since what is returned is a list, with newlines and stuff on the end, need to strip it
     filename = file_list_output[0].strip()
+    logger.debug(f"Found the newest file to be: {filename}")
+    
+    while True:
+        ssh_clientsdtin, ssh_client_stdout, ssh_client_stderr = ssh_client2.exec_command(f"du -sh /tmp/piholeconfigs/{filename} | cut -d 'K' -f 1", get_pty=True)
+        file_size = ssh_client_stdout.readlines()[0]
+        logger.debug(f"Got file size of {file_size}")
+        if file_size != "0":
+            ssh_client2.close()
+            break
+    
+    ssh_client2.close()
 
-    logger.info(f"Found the newest file to be: {filename}")
+
 
     with pysftp.Connection(
         hostname, username=args.user, private_key=args.private_key, cnopts=cnopts
