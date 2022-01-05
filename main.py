@@ -262,7 +262,7 @@ if __name__ == "__main__":
 
     logger = log.get_logger(__file__, debug=args.debug)
 
-    print(pyfiglet.figlet_format("pfSense and PiHole Backup", font="slant"))
+    print(pyfiglet.figlet_format("Backupinator", font="slant"))
     logger.warning(
         "Please be sure to enable SSH in your pfSense (System -> Advanced -> Admin Access)"
     )
