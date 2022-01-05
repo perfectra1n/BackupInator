@@ -155,3 +155,4 @@ cython_debug/
 # Default Configs
 pfsense_config.xml
 pihole-teleporter.tar.gz
+truenas.tar

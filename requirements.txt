@@ -1,4 +1,4 @@
-coloredlogs==15.0
-paramiko==2.7.2
+coloredlogs==15.0.1
+paramiko==2.9.1
 pyfiglet==0.8.post1
 pysftp==0.2.9

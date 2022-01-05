@@ -6,7 +6,9 @@ from paramiko.client import SSHClient
 import pyfiglet
 import pysftp
 import getpass
-import sys
+import tempfile
+import tarfile
+import os
 
 from paramiko.ssh_exception import AuthenticationException
 
@@ -20,13 +22,7 @@ def get_pfsense_config():
     # Have it ignore the hostkey checks
     cnopts = pysftp.CnOpts()
     cnopts.hostkeys = None
-    """
-     if args.pfsense == "false":
-        logger.error("pfSense IP not provided")
-        logger.info("Please provide the IP address / hostname of your pfSense")
-        hostname = input("Hostname / IP address of pfSense: ")
-    else:
-    """
+
     hostname = args.pfsense
 
     if args.user == "false":
@@ -146,6 +142,49 @@ def get_pihole_config():
                 "It appears that the credentials that you provided aren't correct, please try again."
             )
 
+def get_truenas_config():
+    logger.info("Fetching Truenas config. . .")
+    logger.debug("Please make sure ssh is enabled on the Truenas system and your user has your public key.")
+
+    if args.user != "root":
+        logger.debug("Non-root user used. This will likely not work.")
+
+    if args.user == "false":
+        logger.error("Username not provided")
+        logger.info("Please provide the username to connect to Truenas as")
+        args.user = input("Username to SSH (SFTP) into Truenas as: ")
+
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys = None
+
+    hostname = args.truenas
+    tempdir = tempfile.gettempdir()
+
+    logger.debug(f"Using {tempdir} for temp files")
+
+    with pysftp.Connection(hostname, username=args.user,private_key=args.private_key,cnopts=cnopts) as sftp:
+        try:
+            logger.info("Attempting to fetch Truenas config now")
+            sftp.get(f"/data/freenas-v1.db", f"{tempdir}/freenas-v1.db")
+            if not args.no_secrets:
+                sftp.get(f"/data/pwenc_secret", f"{tempdir}/pwenc_secret")
+        except AuthenticationException as e:
+            logger.error(e)
+            logger.info("Credentials provided are not correct, please try again.")
+    
+    logger.debug(f"Writing tar file to {args.truenas_output}...")
+    
+    with tarfile.open(args.truenas_output, "w") as tar:
+        tar.add(f"{tempdir}/freenas-v1.db",arcname="freenas-v1.db")
+        if not args.no_secrets:
+            tar.add(f"{tempdir}/pwenc_secret",arcname="pwenc_secret")
+    
+    logger.debug(f"Removing temp files.")
+    os.remove(f"{tempdir}/freenas-v1.db")
+    if not args.no_secrets:
+        os.remove(f"{tempdir}/pwenc_secret")
+    logger.info(f"Trunas config saved to {args.truenas_output}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -156,13 +195,19 @@ if __name__ == "__main__":
         "--pfsense",
         type=str,
         default="false",
-        help="Provide the IP address / hostname of the PfSense/Pihole system that you wish to fetch the config of.",
+        help="Provide the IP address / hostname of the PfSense system that you wish to fetch the config of.",
     )
     target_group.add_argument(
         "--pihole",
         type=str,
         default="false",
-        help="Provide the IP address / hostname of Pihole that you wish to fetch the config of.",
+        help="Provide the IP address / hostname of the Pihole instance that you wish to fetch the config of.",
+    )
+    target_group.add_argument(
+        "--truenas",
+        type=str,
+        default="false",
+        help="Provide the IP address / hostname of the TrueNas system that you wish to fetch the config for."
     )
 
     parser.add_argument(
@@ -189,11 +234,23 @@ if __name__ == "__main__":
         default="pihole-teleporter.tar.gz",
         help="Optional. Provide the output name of the PiHole config file.",
     )
+    output_group.add_argument(
+        "--truenas-output",
+        type=str,
+        default="truenas.tar",
+        help="Optional. Provide the output name of the Truenas config file."
+    )
     parser.add_argument(
         "--pihole-password",
         type=str,
         default="false",
         help="Required. Provide the password for your PiHole user sudo password so that the config package can be generated.",
+    )
+    parser.add_argument(
+        "--no-secrets",
+        action="store_true",
+        default=False,
+        help="Use to not store secrets (from Truenas)"
     )
     parser.add_argument(
         "--debug",
@@ -213,5 +270,7 @@ if __name__ == "__main__":
         get_pfsense_config()
     elif args.pihole != "false":
         get_pihole_config()
+    elif args.truenas != "false":
+        get_truenas_config()
 
     logger.debug("Reached the end of Python, configs should be saved :)")
