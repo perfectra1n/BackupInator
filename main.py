@@ -225,19 +225,19 @@ if __name__ == "__main__":
     output_group.add_argument(
         "--pfsense-output",
         type=str,
-        default="pfsense_config.xml",
+        default="configs/pfsense_config.xml",
         help="Optional. Provide the output name of the pfsense config file.",
     )
     output_group.add_argument(
         "--pihole-output",
         type=str,
-        default="pihole-teleporter.tar.gz",
+        default="configs/pihole-teleporter.tar.gz",
         help="Optional. Provide the output name of the PiHole config file.",
     )
     output_group.add_argument(
         "--truenas-output",
         type=str,
-        default="truenas.tar",
+        default="configs/truenas.tar",
         help="Optional. Provide the output name of the Truenas config file."
     )
     parser.add_argument(
