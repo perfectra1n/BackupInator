@@ -1,4 +1,4 @@
-# pfsense-pihole-backup
+# Backupinator
 
 ## Quick setup
 Use a cronjob for this, and run it as often as you would like.
