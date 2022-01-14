@@ -17,7 +17,7 @@ python main.py ~/.ssh/sshkey.pem --pihole 192.168.1.2 --user perf3ct --pihole-pa
 
 ## Help Output:
 ```
-usage: main.py [-h] (--pfsense PFSENSE | --pihole PIHOLE) [--user USER] [--pfsense-output PFSENSE_OUTPUT | --pihole-output PIHOLE_OUTPUT] [--pihole-password PIHOLE_PASSWORD] [--debug] private_key
+usage: main.py [-h] (--pfsense PFSENSE | --pihole PIHOLE | --truenas TRUENAS) [--user USER] [--pfsense-output PFSENSE_OUTPUT | --pihole-output PIHOLE_OUTPUT | --truenas-output TRUENAS_OUTPUT] [--pihole-password PIHOLE_PASSWORD] [--no-secrets] [--debug] private_key
 
 Back up Pfsense/Pihole config remotely.
 
@@ -26,14 +26,18 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --pfsense PFSENSE     Provide the IP address / hostname of the PfSense/Pihole system that you wish to fetch the config of.
-  --pihole PIHOLE       Provide the IP address / hostname of Pihole that you wish to fetch the config of.
+  --pfsense PFSENSE     Provide the IP address / hostname of the PfSense system that you wish to fetch the config of.
+  --pihole PIHOLE       Provide the IP address / hostname of the Pihole instance that you wish to fetch the config of.
+  --truenas TRUENAS     Provide the IP address / hostname of the TrueNas system that you wish to fetch the config for.
   --user USER           Required. Provide the username to connect as.
   --pfsense-output PFSENSE_OUTPUT
                         Optional. Provide the output name of the pfsense config file.
   --pihole-output PIHOLE_OUTPUT
                         Optional. Provide the output name of the PiHole config file.
+  --truenas-output TRUENAS_OUTPUT
+                        Optional. Provide the output name of the Truenas config file.
   --pihole-password PIHOLE_PASSWORD
                         Required. Provide the password for your PiHole user sudo password so that the config package can be generated.
-  --debug               Optional. Use this argument if you are debugging any errors.            Optional. Use this argument if you are debugging any errors.
+  --no-secrets          Use to not store secrets (from Truenas)
+  --debug               Optional. Use this argument if you are debugging any errors.
 ```
