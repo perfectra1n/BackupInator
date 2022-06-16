@@ -195,7 +195,7 @@ if __name__ == "__main__":
         "--pfsense",
         type=str,
         default="false",
-        help="Provide the IP address / hostname of the PfSense system that you wish to fetch the config of.",
+        help="Provide the IP address / hostname of the pfSense system that you wish to fetch the config of. (SSH access required, XML file returned)",
     )
     target_group.add_argument(
         "--pihole",
@@ -207,7 +207,7 @@ if __name__ == "__main__":
         "--truenas",
         type=str,
         default="false",
-        help="Provide the IP address / hostname of the TrueNas system that you wish to fetch the config for."
+        help="Provide the IP address / hostname of the TrueNAS system that you wish to fetch the config for. (SSH access required, XML file returned)"
     )
 
     parser.add_argument(
@@ -226,7 +226,7 @@ if __name__ == "__main__":
         "--pfsense-output",
         type=str,
         default="configs/pfsense_config.xml",
-        help="Optional. Provide the output name of the pfsense config file.",
+        help="Optional. Provide the output name of the pfSense config file.",
     )
     output_group.add_argument(
         "--pihole-output",
@@ -238,7 +238,7 @@ if __name__ == "__main__":
         "--truenas-output",
         type=str,
         default="configs/truenas.tar",
-        help="Optional. Provide the output name of the Truenas config file."
+        help="Optional. Provide the output name of the TrueNAS config file."
     )
     parser.add_argument(
         "--pihole-password",
@@ -250,7 +250,7 @@ if __name__ == "__main__":
         "--no-secrets",
         action="store_true",
         default=False,
-        help="Use to not store secrets (from Truenas)"
+        help="Use to not store secrets (from TrueNAS)"
     )
     parser.add_argument(
         "--debug",
