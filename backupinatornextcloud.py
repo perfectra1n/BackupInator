@@ -14,11 +14,12 @@ class BackupinatorNextcloud(BaseBackupClass):
         """
         super().__init__(debug=debug)
         
-        self.values = self.config["nextcloud"]
+        system = "nextcloud"
+        self.nextcloud_values = self.config[system]
         
-        self.url = self.values["ip"]
-        self.session = self.get_requests_session()
-        self.session.auth = (self.values["username"], self.values["password"])
+        self.nextcloud_url = self.values["ip"]
+        self.nextcloud_session = self.get_requests_session()
+        self.nextcloud_session.auth = (self.values["username"], self.values["password"])
 
     def list_files(self, directory):
         """
@@ -27,8 +28,8 @@ class BackupinatorNextcloud(BaseBackupClass):
         :param directory: The directory to list the files in.
         :return: A list of the names of the files in the directory.
         """
-        url = f"{self.url}/remote.php/dav/files/{self.session.auth[0]}/{directory}"
-        response = self.session.request("PROPFIND", url)
+        url = f"{self.url}/remote.php/dav/files/{self.nextcloud_session.auth[0]}/{directory}"
+        response = self.nextcloud_session.request("PROPFIND", url)
         response.raise_for_status()
         files = []
         for item in response.xml.findall(".//{DAV:}response"):
@@ -44,9 +45,9 @@ class BackupinatorNextcloud(BaseBackupClass):
         :param local_path: The local path of the file to upload.
         :param remote_backup_path: The remote path to upload the file to.
         """
-        url = f"{self.url}/remote.php/dav/files/{self.session.auth[0]}/{remote_backup_path}"
+        url = f"{self.url}/remote.php/dav/files/{self.nextcloud_session.auth[0]}/{remote_backup_path}"
         with open(local_path, "rb") as f:
-            response = self.session.put(url, data=f)
+            response = self.nextcloud_session.put(url, data=f)
         response.raise_for_status()
 
     def download_file(self, remote_backup_path, local_path):
@@ -56,8 +57,8 @@ class BackupinatorNextcloud(BaseBackupClass):
         :param remote_backup_path: The remote path of the file to download.
         :param local_path: The local path to download the file to.
         """
-        url = f"{self.url}/remote.php/dav/files/{self.session.auth[0]}/{remote_backup_path}"
-        response = self.session.get(url)
+        url = f"{self.url}/remote.php/dav/files/{self.nextcloud_session.auth[0]}/{remote_backup_path}"
+        response = self.nextcloud_session.get(url)
         response.raise_for_status()
         with open(local_path, "wb") as f:
             f.write(response.content)
@@ -68,8 +69,8 @@ class BackupinatorNextcloud(BaseBackupClass):
 
         :param folder_path: The path of the folder to create.
         """
-        url = f"{self.url}/remote.php/dav/files/{self.session.auth[0]}/{folder_path}"
-        response = self.session.request("MKCOL", url)
+        url = f"{self.url}/remote.php/dav/files/{self.nextcloud_session.auth[0]}/{folder_path}"
+        response = self.nextcloud_session.request("MKCOL", url)
         response.raise_for_status()
 
     def delete_file_or_folder(self, path):
@@ -78,6 +79,6 @@ class BackupinatorNextcloud(BaseBackupClass):
 
         :param path: The path of the file or folder to delete.
         """
-        url = f"{self.url}/remote.php/dav/files/{self.session.auth[0]}/{path}"
-        response = self.session.delete(url)
+        url = f"{self.url}/remote.php/dav/files/{self.nextcloud_session.auth[0]}/{path}"
+        response = self.nextcloud_session.delete(url)
         response.raise_for_status()

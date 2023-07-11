@@ -33,11 +33,11 @@ class BackupinatorPfSense(BaseBackupClass):
                 with sftp.open("/conf/config.xml", "r") as f:
                     config_loc = self.put_data_in_tempfile(f.read())
                 self.logger.debug("Fetched SOMETHING, hopefully it's the pfSense config :)")
-                self.logger.info(f"Saved pfSense config to '{args.pfsense_output}'")
             except AuthenticationException as e:
                 self.logger.error(e)
                 self.logger.info(
                     "It appears that the credentials that you provded aren't correct, please try again."
                 )
+        return config_loc
 
         
