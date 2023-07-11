@@ -50,7 +50,6 @@ def get_pfsense_config():
             )
     return
 
-
 def get_pihole_config():
     logger.info("Fetching Pihole configs...")
     cnopts = pysftp.CnOpts()

@@ -159,3 +159,4 @@ scriptoutput.log*
 pfsense_config.xml
 pihole-teleporter.tar.gz
 truenas.tar
+config.json

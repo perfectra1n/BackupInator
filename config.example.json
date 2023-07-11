@@ -1,0 +1,25 @@
+{
+    "pfsense":{
+        "ip": "192.168.1.1",
+        "username": "root",
+        "ssh_key_path": "~/.ssh/id_rsa"
+    },
+    "opnsense":{
+        "ip": "https://pfsense.network",
+        "api_key": "dV/VGtPOxVPfa6HkqwqmrRvzqN1qF+edNAlm2kxcVhE1R/chars",
+        "api_secret": "xjAgmP44tD1/QoF2bATThtWd+uYnus4w/chars/+xAvVeFub8ZsEHk/lRK9+Rn"
+    },
+    "truenas":{
+        "ip": "192.168.1.5"
+    },
+    "nextcloud":{
+        "ip":"https://nextcloud.domain.com",
+        "username": "user",
+        "password": "password",
+        "remote_backup_path": "Backups/Configs"
+    },
+    "local":{
+        "backup_path": "/mnt/backup"
+    },
+    "backup_to": "nextcloud"
+}
