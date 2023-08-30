@@ -90,7 +90,7 @@ def get_pihole_config():
 
     ssh_client.connect(args.pihole, username=args.user, pkey=loaded_pkey)
     ssh_client_stdin, ssh_client_stdout, ssh_client_stderr = ssh_client.exec_command(
-        f"mkdir -p /tmp/piholeconfigs; cd /tmp/piholeconfigs; echo {args.pihole_password} | sudo -S pihole -a -t"
+        f"mkdir -p /tmp/piholeconfigs; cd /tmp/piholeconfigs; echo '{args.pihole_password}' | sudo -S pihole -a -t"
     )
     logger.info(
         "New config backup package should be located in the '/tmp/piholeconfigs' of your Pihole, fetching the file now..."
