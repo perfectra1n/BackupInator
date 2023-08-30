@@ -50,6 +50,7 @@ def get_pfsense_config():
             )
     return
 
+
 def get_pihole_config():
     logger.info("Fetching Pihole configs...")
     cnopts = pysftp.CnOpts()
@@ -86,7 +87,6 @@ def get_pihole_config():
             logger.info("SSH file not found. Try again?")
             args.private_key = input("Enter the path to your private ssh key: ")
 
-
     ssh_client.connect(args.pihole, username=args.user, pkey=loaded_pkey)
     ssh_client_stdin, ssh_client_stdout, ssh_client_stderr = ssh_client.exec_command(
         f"mkdir -p /tmp/piholeconfigs; cd /tmp/piholeconfigs; echo {args.pihole_password} | sudo -S pihole -a -t"
@@ -110,9 +110,15 @@ def get_pihole_config():
     # Since what is returned is a list, with newlines and stuff on the end, need to strip it
     filename = file_list_output[0].strip()
     logger.debug(f"Found the newest file to be: {filename}")
-    
+
     while True:
-        ssh_clientsdtin, ssh_client_stdout, ssh_client_stderr = ssh_client2.exec_command(f"du -sh /tmp/piholeconfigs/{filename} | cut -d 'K' -f 1", get_pty=True)
+        (
+            ssh_clientsdtin,
+            ssh_client_stdout,
+            ssh_client_stderr,
+        ) = ssh_client2.exec_command(
+            f"du -sh /tmp/piholeconfigs/{filename} | cut -d 'K' -f 1", get_pty=True
+        )
         file_size = ssh_client_stdout.readlines()[0]
         error = ssh_client_stderr.readlines()
         if len(error) > 0:
@@ -122,10 +128,8 @@ def get_pihole_config():
         if file_size != "0":
             ssh_client2.close()
             break
-    
+
     ssh_client2.close()
-
-
 
     with pysftp.Connection(
         hostname, username=args.user, private_key=args.private_key, cnopts=cnopts
@@ -141,9 +145,12 @@ def get_pihole_config():
                 "It appears that the credentials that you provided aren't correct, please try again."
             )
 
+
 def get_truenas_config():
     logger.info("Fetching Truenas config. . .")
-    logger.debug("Please make sure ssh is enabled on the Truenas system and your user has your public key.")
+    logger.debug(
+        "Please make sure ssh is enabled on the Truenas system and your user has your public key."
+    )
 
     if args.user != "root":
         logger.debug("Non-root user used. This will likely not work.")
@@ -161,7 +168,9 @@ def get_truenas_config():
 
     logger.debug(f"Using {tempdir} for temp files")
 
-    with pysftp.Connection(hostname, username=args.user,private_key=args.private_key,cnopts=cnopts) as sftp:
+    with pysftp.Connection(
+        hostname, username=args.user, private_key=args.private_key, cnopts=cnopts
+    ) as sftp:
         try:
             logger.info("Attempting to fetch Truenas config now")
             sftp.get(f"/data/freenas-v1.db", f"{tempdir}/freenas-v1.db")
@@ -170,14 +179,14 @@ def get_truenas_config():
         except AuthenticationException as e:
             logger.error(e)
             logger.info("Credentials provided are not correct, please try again.")
-    
+
     logger.debug(f"Writing tar file to {args.truenas_output}...")
-    
+
     with tarfile.open(args.truenas_output, "w") as tar:
-        tar.add(f"{tempdir}/freenas-v1.db",arcname="freenas-v1.db")
+        tar.add(f"{tempdir}/freenas-v1.db", arcname="freenas-v1.db")
         if not args.no_secrets:
-            tar.add(f"{tempdir}/pwenc_secret",arcname="pwenc_secret")
-    
+            tar.add(f"{tempdir}/pwenc_secret", arcname="pwenc_secret")
+
     logger.debug(f"Removing temp files.")
     os.remove(f"{tempdir}/freenas-v1.db")
     if not args.no_secrets:
@@ -206,7 +215,7 @@ if __name__ == "__main__":
         "--truenas",
         type=str,
         default="false",
-        help="Provide the IP address / hostname of the TrueNAS system that you wish to fetch the config for. (SSH access required, XML file returned)"
+        help="Provide the IP address / hostname of the TrueNAS system that you wish to fetch the config for. (SSH access required, XML file returned)",
     )
 
     parser.add_argument(
@@ -237,7 +246,7 @@ if __name__ == "__main__":
         "--truenas-output",
         type=str,
         default="configs/truenas.tar",
-        help="Optional. Provide the output name of the TrueNAS config file."
+        help="Optional. Provide the output name of the TrueNAS config file.",
     )
     parser.add_argument(
         "--pihole-password",
@@ -249,7 +258,7 @@ if __name__ == "__main__":
         "--no-secrets",
         action="store_true",
         default=False,
-        help="Use to not store secrets (from TrueNAS)"
+        help="Use to not store secrets (from TrueNAS)",
     )
     parser.add_argument(
         "--debug",

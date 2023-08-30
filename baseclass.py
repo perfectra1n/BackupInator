@@ -6,12 +6,13 @@ import requests
 import tempfile
 from requests.adapters import HTTPAdapter, Retry
 
-class BaseBackupClass():
+
+class BaseBackupClass:
     def __init__(self, debug=False) -> None:
         self.logger = log.get_logger(__file__, debug=debug)
         self.config = self.get_config()
 
-    def get_config(self, file:str="config.json") -> dict:
+    def get_config(self, file: str = "config.json") -> dict:
         """Gets the config file and returns it as a dict.
 
         Returns
@@ -25,16 +26,16 @@ class BaseBackupClass():
 
     def save_config(self) -> None:
         pass
-    
-    def validate_config(self, required_keys:list=[], system:str="") -> bool:
+
+    def validate_config(self, required_keys: list = [], system: str = "") -> bool:
         if not all(key in required_keys for key in self.config[system]):
             self.logger.error("Missing required keys in config file")
             self.logger.error(f"Keys that might be missing: {required_keys}")
             self.logger.error(f"Compared them against: {self.config[system]}")
             self.logger.info("Please check the config file and try again")
-            
+
             return False
-    
+
     def put_data_in_tempfile(self, data: bytes) -> str:
         """
         Creates a temporary file and writes data to it.
@@ -45,7 +46,7 @@ class BaseBackupClass():
         with tempfile.NamedTemporaryFile(delete=False) as f:
             f.write(data)
             return f.name
-        
+
     def get_requests_session(self) -> requests.Session:
         """Creates a requests session with the token and user agent header."""
         session = requests.Session()
@@ -58,7 +59,7 @@ class BaseBackupClass():
         # Have it work for both http and https
         session.mount("https://", HTTPAdapter(max_retries=retries))
         session.mount("http://", HTTPAdapter(max_retries=retries))
-        
+
         return session
 
     def set_url(self, url=""):
@@ -84,7 +85,9 @@ class BaseBackupClass():
         """
         self.session.headers.update({"Authorization": token})
 
-    def make_request(self, url:str, api_endpoint: str, method="GET", data="", params={}) -> requests.Response:
+    def make_request(
+        self, url: str, api_endpoint: str, method="GET", data="", params={}
+    ) -> requests.Response:
         """Standard request method for making requests.
 
         Parameters
@@ -113,5 +116,3 @@ class BaseBackupClass():
                 f"Possible invalid response code: {str(req_resp.status_code)}, response text: {req_resp.text}"
             )
         return req_resp
-    
-            
