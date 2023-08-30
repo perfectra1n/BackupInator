@@ -13,7 +13,7 @@ class BackupinatorClient(BackupinatorNextcloud, BackupinatorPfSense, Backupinato
     
     def handle_backup(self, file_path:str, system:str):
         formatted_date = datetime.date.today().strftime("%m_%d_%y")
-        new_filename = f"{formatted_date}_{system}.txt"
+        new_filename = f"{formatted_date}_{system}.xml"
         
         if self.config["backup_to"] == "nextcloud":
             
