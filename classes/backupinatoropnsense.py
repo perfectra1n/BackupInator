@@ -3,7 +3,7 @@ from paramiko import client
 from paramiko.client import SSHClient
 from paramiko.ssh_exception import AuthenticationException
 
-from baseclass import BaseBackupClass
+from classes.baseclass import BaseBackupClass
 
 
 class BackupinatorOPNsense(BaseBackupClass):
@@ -22,6 +22,8 @@ class BackupinatorOPNsense(BaseBackupClass):
             self.opnsense_values["api_key"],
             self.opnsense_values["api_secret"],
         )
+        
+        self.file_ending = ".xml"
 
     def get_opnsense_config(self):
         self.logger.info("Fetching opnsense config...")

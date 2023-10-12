@@ -1,11 +1,11 @@
 import json
-
-# Local import
-import log
+import os
 import requests
 import tempfile
 from requests.adapters import HTTPAdapter, Retry
 
+# Local import
+import log
 
 class BaseBackupClass:
     def __init__(self, debug=False) -> None:
@@ -36,15 +36,18 @@ class BaseBackupClass:
 
             return False
 
-    def put_data_in_tempfile(self, data: bytes) -> str:
+    def put_data_in_tempfile(self, data: bytes, file_ending: str) -> str:
         """
         Creates a temporary file and writes data to it.
 
         :param data: The data to write to the file.
         :return: The path to the temporary file.
         """
-        with tempfile.NamedTemporaryFile(delete=False) as f:
+        complete_file_ending = f"{self.system}.{file_ending}"
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=complete_file_ending) as f:
             f.write(data)
+            self.logger.info(f"Created a file with size {os.path.getsize(f.name)}")
             return f.name
 
     def get_requests_session(self) -> requests.Session:

@@ -3,7 +3,7 @@ from paramiko import client
 from paramiko.client import SSHClient
 from paramiko.ssh_exception import AuthenticationException
 
-from baseclass import BaseBackupClass
+from classes.baseclass import BaseBackupClass
 
 
 class BackupinatorPfSense(BaseBackupClass):

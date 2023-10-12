@@ -3,18 +3,20 @@ from paramiko import client
 from paramiko.client import SSHClient
 from paramiko.ssh_exception import AuthenticationException
 
-from baseclass import BaseBackupClass
+from classes.baseclass import BaseBackupClass
 
 
 class BackupinatorPfSense(BaseBackupClass):
     def __init__(self, debug=False) -> None:
         super().__init__(debug=debug)
 
-        self.system = "pihole"
+        self.system = "pfsense"
         keys_required = ["username", "private_key_path", "ip"]
         self.validate_config(required_keys=keys_required, system=self.system)
 
         self.values = self.config[self.system]
+        
+        self.file_ending = ".xml"
 
     def get_pfsense_config(self):
         self.logger.info("Fetching pfSense config...")
