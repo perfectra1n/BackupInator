@@ -97,7 +97,7 @@ class BackupinatorNextcloud(BaseBackupClass):
         self.logger.info(f"Backing up {source_file_path} to {self.config['backup_to']}")
 
         if self.config["backup_to"] == "nextcloud":
-            path = f"{self.config['nextcloud']['remote_backup_path']}/{final_file_name}"
+            path = f"{self.config['nextcloud']['remote_backup_path']}/{self.system}/{final_file_name}"
             self.upload_file(source_file_path, path)
 
         if self.config["backup_to"] == "local":
